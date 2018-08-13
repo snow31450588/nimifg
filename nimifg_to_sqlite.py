@@ -9,6 +9,47 @@ import gdal
 import ogr
 
 
+"""
+back_bn
+back_bpl
+back_bup
+back_d
+
+index_a
+index_ac
+index_hamlet
+index_poi
+index_poi_relation
+index_z
+
+land_t
+
+other_admin
+other_fname
+other_hmname
+other_pname
+
+road_c
+road_cnl
+road_cond
+road_cr
+road_dr
+road_ic
+road_r_lname
+road_r_lzone
+road_r_name
+road_special_speed
+road_trfcsign
+road_z_level
+"""
+
+GEOM_TYPES = {
+    "back_bl": gdal.ogr.wkbLineString,
+    "back_bp": gdal.ogr.wkbPolygon,
+    "road_n": gdal.ogr.wkbPoint,
+    "road_r": gdal.ogr.wkbLineString
+}
+
 def read_mif(data_source, table_name, file_name):
     print(table_name, file_name)
     ds = gdal.OpenEx(file_name, gdal.OF_VECTOR )
@@ -19,7 +60,9 @@ def read_mif(data_source, table_name, file_name):
     layer_read = ds.GetLayerByName(layer_name)
     feat_defn = layer_read.GetLayerDefn()
 
-    layer_write = data_source.CreateLayer(table_name, None, layer_read.GetGeomType(), options = ['SPATIAL_INDEX=NO'] )
+    geom_type = GEOM_TYPES.get(table_name.lower(), layer_read.GetGeomType())
+
+    layer_write = data_source.CreateLayer(table_name, None, geom_type, options = ['SPATIAL_INDEX=NO'] )
     if layer_write is None:
         print("Layer creation failed.\n")
 
@@ -73,7 +116,7 @@ def folder_to_sqlite(fd, sqn):
 
 
 def usage():
-	print('''Usage: %s <nimifg folder>'''%__file__)
+	print('''Usage: %s <nimifg folder> <sqlite file>'''%__file__)
 
 
 if __name__ == '__main__':
