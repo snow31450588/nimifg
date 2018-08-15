@@ -5,8 +5,8 @@ import os
 import sys
 import glob
 
-import gdal
-import ogr
+from osgeo import gdal
+from osgeo import ogr
 
 
 """

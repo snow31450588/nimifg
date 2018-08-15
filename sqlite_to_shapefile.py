@@ -3,8 +3,8 @@
 
 import os
 import sys
-import gdal
-import ogr
+from osgeo import gdal
+from osgeo import ogr
 
 
 def create_shapefile(file_name, feature_type):
