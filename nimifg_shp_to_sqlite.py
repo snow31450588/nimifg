@@ -51,7 +51,7 @@ GEOM_TYPES = {
     "road_r": gdal.ogr.wkbLineString
 }
 
-def read_mif(data_source, table_name, file_name):
+def read_shp(data_source, table_name, file_name):
     print(table_name, file_name)
     ds = gdal.OpenEx(file_name, gdal.OF_VECTOR )
     if ds is None:
@@ -107,13 +107,13 @@ def folder_to_sqlite(fd, sqn):
         raise Exception("Create output failed!")
 
     for sub in os.listdir(fd):
-        for mif in glob.glob(os.path.join(fd, sub, '*.mif')):
+        for mif in glob.glob(os.path.join(fd, sub, '*.shp')):
             basename = os.path.basename(mif)
             basename = os.path.splitext(basename)[0]
             if len(basename)>len(province_name):
                 basename = basename[:-len(province_name)]
             table_name = "%s_%s"%(sub, basename)
-            read_mif(data_source, table_name, mif)
+            read_shp(data_source, table_name, mif)
 
 
 def usage():

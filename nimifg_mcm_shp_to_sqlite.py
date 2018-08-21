@@ -9,40 +9,6 @@ from osgeo import gdal
 from osgeo import ogr
 
 
-"""
-back_bn
-back_bpl
-back_bup
-back_d
-
-index_a
-index_ac
-index_hamlet
-index_poi
-index_poi_relation
-index_z
-
-land_t
-
-other_admin
-other_fname
-other_hmname
-other_pname
-
-road_c
-road_cnl
-road_cond
-road_cr
-road_dr
-road_ic
-road_r_lname
-road_r_lzone
-road_r_name
-road_special_speed
-road_trfcsign
-road_z_level
-"""
-
 GEOM_TYPES = {
     "back_bl": gdal.ogr.wkbLineString,
     "back_bp": gdal.ogr.wkbPolygon,
@@ -51,7 +17,7 @@ GEOM_TYPES = {
     "road_r": gdal.ogr.wkbLineString
 }
 
-def read_mif(data_source, table_name, file_name):
+def read_shp(data_source, table_name, file_name):
     print(table_name, file_name)
     ds = gdal.OpenEx(file_name, gdal.OF_VECTOR )
     if ds is None:
@@ -106,14 +72,13 @@ def folder_to_sqlite(fd, sqn):
     if not data_source:
         raise Exception("Create output failed!")
 
-    for sub in os.listdir(fd):
-        for mif in glob.glob(os.path.join(fd, sub, '*.mif')):
-            basename = os.path.basename(mif)
-            basename = os.path.splitext(basename)[0]
-            if len(basename)>len(province_name):
-                basename = basename[:-len(province_name)]
-            table_name = "%s_%s"%(sub, basename)
-            read_mif(data_source, table_name, mif)
+    for mif in glob.glob(os.path.join(fd, '*.shp')):
+        basename = os.path.basename(mif)
+        basename = os.path.splitext(basename)[0]
+        if len(basename)>len(province_name):
+            basename = basename[:-len(province_name)]
+        table_name = "mcm_%s"%basename.lower()
+        read_shp(data_source, table_name, mif)
 
 
 def usage():
